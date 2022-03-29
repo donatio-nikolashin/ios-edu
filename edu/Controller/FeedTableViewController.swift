@@ -1,15 +1,17 @@
 import UIKit
 
-class FeedTableViewController: UITableViewController {
+class FeedTableViewController: UITableViewController, UITableViewDataSourcePrefetching {
 
     private var images: [UnsplashImage] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Unsplash"
-        tableView.separatorColor = .white
+        tableView.separatorColor = .none
         tableView.backgroundColor = .white
         tableView.allowsSelection = false
+        tableView.dataSource = self
+        tableView.prefetchDataSource = self
         initLoading()
     }
 
@@ -55,6 +57,10 @@ class FeedTableViewController: UITableViewController {
                 contentWidth: contentWidth,
                 margin: margin
         )
+    }
+
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+
     }
 
 }

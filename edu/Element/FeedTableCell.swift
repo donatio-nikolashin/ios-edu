@@ -29,26 +29,30 @@ class FeedTableCell: UITableViewCell {
     public func reload() {
         let imageRatio: Double = unsplashImage.height / unsplashImage.width
         let imageHeight = contentWidth * imageRatio
-        addPortraitSubview()
         addNicknameSubview()
-        addMainImageSubviewAndShareButton(imageHeight: imageHeight, imageRatio: imageRatio)
         addLikeButtonAndLikeCounterSubviews(imageHeight: imageHeight)
         addDescription(imageHeight: imageHeight)
+        addPortraitSubview()
+        addMainImageSubviewAndShareButton(imageHeight: imageHeight, imageRatio: imageRatio)
     }
 
     private func addPortraitSubview() {
-        do {
-            let imageData: Data = try Data(contentsOf: URL(string: unsplashImage.user.profile_image.large)!)
-            let image = UIImage(data: imageData)
-            let portraitView = UIImageView(image: image)
-            portraitView.frame = CGRect(x: margin, y: 10, width: 40, height: 40)
-            portraitView.layer.masksToBounds = false
-            portraitView.layer.cornerRadius = 20
-            portraitView.clipsToBounds = true
-            contentView.addSubview(portraitView)
-        } catch {
-            print("Unexpected error: \(error).")
-        }
+        DispatchQueue.global().async {
+                    do {
+                        let imageData: Data = try Data(contentsOf: URL(string: self.unsplashImage.user.profile_image.large)!)
+                        DispatchQueue.main.async {
+                                    let image = UIImage(data: imageData)
+                                    let portraitView = UIImageView(image: image)
+                                    portraitView.frame = CGRect(x: self.margin, y: 10, width: 40, height: 40)
+                                    portraitView.layer.masksToBounds = false
+                                    portraitView.layer.cornerRadius = 20
+                                    portraitView.clipsToBounds = true
+                                    self.contentView.addSubview(portraitView)
+                                }
+                    } catch {
+                        print("Unexpected error: \(error).")
+                    }
+                }
     }
 
     private func addNicknameSubview() {
@@ -59,37 +63,43 @@ class FeedTableCell: UITableViewCell {
     }
 
     private func addMainImageSubviewAndShareButton(imageHeight: Double, imageRatio: Double) {
-        let shareButton = UIButton(type: .custom)
-        shareButton.setImage(UIImage(named: "share_btn"), for: UIControl.State.normal)
-        shareButton.frame = CGRect(x: contentWidth - margin - 20, y: imageHeight + 70, width: 40, height: 40)
-        let mainImageView: UIView
-        do {
-            let imageData: Data = try Data(contentsOf: URL(string: unsplashImage.urls.regular)!)
-            let image = UIImage(data: imageData)
-            mainImageView = UIImageView(image: image)
-            shareButton.setOnClickListener(for: UIControl.Event.touchUpInside) {
-                        let items = [image!]
-                        let ac = UIActivityViewController(activityItems: items, applicationActivities: nil)
-                        self.share(ac)
-                    }
-            contentView.addSubview(shareButton)
-        } catch {
-            let label = UILabel()
-            label.text = "Couldn't load image. Please try again later."
-            label.textAlignment = .center
-            label.textColor = .gray
-            mainImageView = label
+        let configure: (UIView) -> Void = { view in
+            view.frame = CGRect(x: self.margin, y: 60, width: self.contentWidth, height: imageHeight)
+            view.layer.cornerRadius = 8.0
+            view.contentMode = .scaleAspectFit
+            view.clipsToBounds = true
         }
-        let imageHeight = contentWidth * imageRatio
-        mainImageView.frame = CGRect(x: margin, y: 60, width: contentWidth, height: imageHeight)
-        mainImageView.layer.cornerRadius = 8.0
-        mainImageView.contentMode = .scaleAspectFit
-        mainImageView.clipsToBounds = true
-        contentView.addSubview(mainImageView)
-        mainImageView.isUserInteractionEnabled = true
-        mainImageView.setOnDoubleClickListener {
-                    self.likePressed(likeCounter: self.likeCounter!, likeButton: self.likeButton!)
-                    self.likeButton!.flipLikedState()
+        DispatchQueue.global().async {
+                    do {
+                        let imageData: Data = try Data(contentsOf: URL(string: self.unsplashImage.urls.regular)!)
+                        DispatchQueue.main.async {
+                                    let shareButton = UIButton(type: .custom)
+                                    shareButton.setImage(UIImage(named: "share_btn"), for: UIControl.State.normal)
+                                    shareButton.frame = CGRect(x: self.contentWidth - self.margin - 20, y: imageHeight + 70, width: 40, height: 40)
+                                    let mainImageView: UIView
+                                    let image = UIImage(data: imageData)
+                                    mainImageView = UIImageView(image: image)
+                                    shareButton.setOnClickListener(for: UIControl.Event.touchUpInside) {
+                                                let items = [image!]
+                                                let ac = UIActivityViewController(activityItems: items, applicationActivities: nil)
+                                                self.share(ac)
+                                            }
+                                    configure(mainImageView)
+                                    self.contentView.addSubview(mainImageView)
+                                    mainImageView.isUserInteractionEnabled = true
+                                    mainImageView.setOnDoubleClickListener {
+                                                self.likePressed(likeCounter: self.likeCounter!, likeButton: self.likeButton!)
+                                                self.likeButton!.flipLikedState()
+                                            }
+                                }
+                    } catch {
+                        let label = UILabel()
+                        label.text = "Couldn't load image. Please try again later."
+                        label.textAlignment = .center
+                        label.textColor = .gray
+                        configure(label)
+                        self.contentView.addSubview(label)
+                    }
                 }
     }
 
@@ -99,6 +109,7 @@ class FeedTableCell: UITableViewCell {
         likeCounter!.frame = CGRect(x: (margin * 2) + 40, y: imageHeight + 70, width: contentWidth - 60, height: 40)
         contentView.addSubview(likeCounter!)
         likeButton = HeartButton()
+        likeButton!.setLiked(value: unsplashImage.liked_by_user)
         likeButton!.frame = CGRect(x: margin, y: imageHeight + 70, width: 40, height: 40)
         likeButton!.setOnClickListener(for: UIControl.Event.touchUpInside) {
                     self.likePressed(likeCounter: self.likeCounter!, likeButton: self.likeButton!)

@@ -1,4 +1,4 @@
-struct UnsplashImage: Codable {
+class UnsplashImage: Codable {
     public let urls: UnsplashImageUrls
     public let user: UnsplashUser
     public let width: Double
@@ -8,15 +8,15 @@ struct UnsplashImage: Codable {
     public var liked_by_user: Bool
 }
 
-struct UnsplashImageUrls: Codable {
+class UnsplashImageUrls: Codable {
     public let regular: String
 }
 
-struct UnsplashUser: Codable {
+class UnsplashUser: Codable {
     public let username: String
     public let profile_image: UnsplashUserProfileImage
 }
 
-struct UnsplashUserProfileImage: Codable {
+class UnsplashUserProfileImage: Codable {
     public let large: String
 }
