@@ -2,15 +2,17 @@ import UIKit
 
 class FeedTableCell: UITableViewCell {
 
-    private let rootViewController: UIViewController
+    private static let formatString: String = NSLocalizedString("likes count", comment: "Likes count string format to be found in Localized.stringsdict")
+
     private var unsplashImage: UnsplashImage
     private let contentWidth: Double
     private let margin: Double
     private var likeCounter: UILabel? = nil
     private var likeButton: HeartButton? = nil
+    private let share: (UIActivityViewController) -> Void
 
-    init(rootViewController: UIViewController, unsplashImage: inout UnsplashImage, contentWidth: Double, margin: Double) {
-        self.rootViewController = rootViewController
+    init(share: @escaping (UIActivityViewController) -> Void, unsplashImage: inout UnsplashImage, contentWidth: Double, margin: Double) {
+        self.share = share
         self.unsplashImage = unsplashImage
         self.contentWidth = contentWidth
         self.margin = margin
@@ -26,11 +28,12 @@ class FeedTableCell: UITableViewCell {
 
     public func reload() {
         let imageRatio: Double = unsplashImage.height / unsplashImage.width
-        let imageHeight = contentWidth * imageRatio;
+        let imageHeight = contentWidth * imageRatio
         addPortraitSubview()
         addNicknameSubview()
         addMainImageSubviewAndShareButton(imageHeight: imageHeight, imageRatio: imageRatio)
         addLikeButtonAndLikeCounterSubviews(imageHeight: imageHeight)
+        addDescription(imageHeight: imageHeight)
     }
 
     private func addPortraitSubview() {
@@ -67,7 +70,7 @@ class FeedTableCell: UITableViewCell {
             shareButton.setOnClickListener(for: UIControl.Event.touchUpInside) {
                         let items = [image!]
                         let ac = UIActivityViewController(activityItems: items, applicationActivities: nil)
-                        self.rootViewController.present(ac, animated: true)
+                        self.share(ac)
                     }
             contentView.addSubview(shareButton)
         } catch {
@@ -77,7 +80,7 @@ class FeedTableCell: UITableViewCell {
             label.textColor = .gray
             mainImageView = label
         }
-        let imageHeight = contentWidth * imageRatio;
+        let imageHeight = contentWidth * imageRatio
         mainImageView.frame = CGRect(x: margin, y: 60, width: contentWidth, height: imageHeight)
         mainImageView.layer.cornerRadius = 8.0
         mainImageView.contentMode = .scaleAspectFit
@@ -93,7 +96,7 @@ class FeedTableCell: UITableViewCell {
     private func addLikeButtonAndLikeCounterSubviews(imageHeight: Double) {
         likeCounter = UILabel()
         likeCounter!.text = likeText(likes: unsplashImage.likes)
-        likeCounter!.frame = CGRect(x: (margin * 2) + 40, y: imageHeight + 70, width: contentWidth - 60, height: 40);
+        likeCounter!.frame = CGRect(x: (margin * 2) + 40, y: imageHeight + 70, width: contentWidth - 60, height: 40)
         contentView.addSubview(likeCounter!)
         likeButton = HeartButton()
         likeButton!.frame = CGRect(x: margin, y: imageHeight + 70, width: 40, height: 40)
@@ -107,7 +110,7 @@ class FeedTableCell: UITableViewCell {
     private func addDescription(imageHeight: Double) {
         if (unsplashImage.description != nil) {
             let descriptionView = UILabel()
-            descriptionView.text = unsplashImage.description
+            descriptionView.text = unsplashImage.description!
             descriptionView.textColor = .black
             descriptionView.frame = CGRect(x: margin, y: imageHeight + 120, width: contentWidth, height: 40)
             contentView.addSubview(descriptionView)
@@ -127,15 +130,8 @@ class FeedTableCell: UITableViewCell {
     }
 
     private func likeText(likes: Int) -> String {
-        var plural = " лайков"
-        if likes % 10 == 1 && likes % 100 != 11 {
-            plural = " лайк"
-        } else if (likes % 10 >= 2 && likes % 10 <= 4) && !(likes % 100 >= 12 && likes % 100 <= 14) {
-            plural = " лайка"
-        } else {
-            plural = " лайков"
-        }
-        return String(likes) + plural
+        let localized: String = String.localizedStringWithFormat(FeedTableCell.formatString, likes)
+        return String(likes) + " " + localized
     }
 
 }
