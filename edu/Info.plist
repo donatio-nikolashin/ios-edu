@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UNSPLASH_PHOTOS_COUNT</key>
+	<string>10</string>
+	<key>UNSPLASH_ACCESS_KEY</key>
+	<string>S42CEJChSupnll6COITCu9TRZJfAvWCiWO2MEnp-xew</string>
+	<key>UNSPLASH_API_HOST</key>
+	<string>api.unsplash.com</string>
+</dict>
+</plist>
