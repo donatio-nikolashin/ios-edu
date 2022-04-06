@@ -24,6 +24,11 @@ class HeartButton: UIButton {
         animate()
     }
 
+    public func setLiked(value: Bool) {
+        isLiked = value
+        setImage(value ? likedImage : unlikedImage, for: .normal)
+    }
+
     private func animate() {
         UIView.animate(withDuration: 0.1, animations: {
                     let newImage = self.isLiked ? self.likedImage : self.unlikedImage

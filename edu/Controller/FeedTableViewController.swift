@@ -1,15 +1,21 @@
 import UIKit
 
-class FeedTableViewController: UITableViewController {
+class FeedTableViewController: UITableViewController  {
 
     private var images: [UnsplashImage] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Unsplash"
-        tableView.separatorColor = .white
+        if #available(iOS 13.0, *) {
+            view?.overrideUserInterfaceStyle = .light
+        }
+        navigationController?.isNavigationBarHidden = false
+        view.backgroundColor = .white
         tableView.backgroundColor = .white
+        tableView.separatorColor = .white
         tableView.allowsSelection = false
+        tableView.showsVerticalScrollIndicator = false
         initLoading()
     }
 
@@ -50,7 +56,10 @@ class FeedTableViewController: UITableViewController {
         let contentWidth = view.bounds.width * 0.95
         let margin = (view.bounds.width - contentWidth) / 2.0
         return FeedTableCell(
-                share: { ac in self.present(ac, animated: true) },
+                share: { image in
+                    let ac = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+                    self.present(ac, animated: true)
+                },
                 unsplashImage: &images[indexPath.row],
                 contentWidth: contentWidth,
                 margin: margin

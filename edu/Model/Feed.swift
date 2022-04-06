@@ -1,22 +1,43 @@
-struct UnsplashImage: Codable {
+class UnsplashImage: Codable {
+
+    public let id: String
     public let urls: UnsplashImageUrls
     public let user: UnsplashUser
     public let width: Double
     public let height: Double
     public let description: String?
     public var likes: Int
-    public var liked_by_user: Bool
+    public var likedByUser: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case urls
+        case user
+        case width
+        case height
+        case description
+        case likes
+        case likedByUser = "liked_by_user"
+    }
+
 }
 
-struct UnsplashImageUrls: Codable {
+class UnsplashImageUrls: Codable {
     public let regular: String
 }
 
-struct UnsplashUser: Codable {
+class UnsplashUser: Codable {
+
     public let username: String
-    public let profile_image: UnsplashUserProfileImage
+    public let profileImage: UnsplashUserProfileImage
+
+    enum CodingKeys: String, CodingKey {
+        case username
+        case profileImage = "profile_image"
+    }
+
 }
 
-struct UnsplashUserProfileImage: Codable {
+class UnsplashUserProfileImage: Codable {
     public let large: String
 }

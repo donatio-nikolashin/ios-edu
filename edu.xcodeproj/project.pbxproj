@@ -16,7 +16,9 @@
 		E069B4991B1FE6746447097E /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069BA806535DCE9265277BF /* Feed.swift */; };
 		E069B59B3BC3CD32FD680541 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069BBF6E02514365CCCC3EC /* Request.swift */; };
 		E069B8D0FF77897366AA7078 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B191E76A3200AF3D33F4 /* APIClient.swift */; };
+		E069BDAADA6E21CEE8026C57 /* Flash.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069BC616B13B80C1305A9DB /* Flash.swift */; };
 		E069BE4C09EA86E4980ABE3C /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B954A24D92AA62995DEC /* Helpers.swift */; };
+		E069BE596E674049DA7ED48C /* GetHeartPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B754E38B35B985710324 /* GetHeartPath.swift */; };
 		E069BFD5BEAB25A4BAF25AA1 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E069B242701B6390037C9ADD /* .gitignore */; };
 		E069BFFD2D9B4D0D40DF9FBD /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B11BA2B9B16AA97D82D1 /* FeedTableCell.swift */; };
 /* End PBXBuildFile section */
@@ -31,10 +33,12 @@
 		E069B191E76A3200AF3D33F4 /* APIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		E069B242701B6390037C9ADD /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = file.gitignore; path = .gitignore; sourceTree = "<group>"; };
 		E069B53AB0EAA5A8F231462A /* SetOnClickListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetOnClickListener.swift; sourceTree = "<group>"; };
+		E069B754E38B35B985710324 /* GetHeartPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetHeartPath.swift; sourceTree = "<group>"; };
 		E069B7A1626FEE3F5FEBA00A /* FeedTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableViewController.swift; sourceTree = "<group>"; };
 		E069B954A24D92AA62995DEC /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		E069BA806535DCE9265277BF /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		E069BBF6E02514365CCCC3EC /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
+		E069BC616B13B80C1305A9DB /* Flash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flash.swift; sourceTree = "<group>"; };
 		E069BD771D35F9B39E6C58BD /* HeartButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeartButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -103,6 +107,8 @@
 			isa = PBXGroup;
 			children = (
 				E069B53AB0EAA5A8F231462A /* SetOnClickListener.swift */,
+				E069B754E38B35B985710324 /* GetHeartPath.swift */,
+				E069BC616B13B80C1305A9DB /* Flash.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -205,6 +211,8 @@
 				E069B4991B1FE6746447097E /* Feed.swift in Sources */,
 				E069B1739B81C3352873DC39 /* SetOnClickListener.swift in Sources */,
 				E069B45431C2D5A19BDB540D /* HeartButton.swift in Sources */,
+				E069BE596E674049DA7ED48C /* GetHeartPath.swift in Sources */,
+				E069BDAADA6E21CEE8026C57 /* Flash.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,6 +340,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 483TSH5L3U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = edu/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -359,6 +368,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 483TSH5L3U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = edu/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
