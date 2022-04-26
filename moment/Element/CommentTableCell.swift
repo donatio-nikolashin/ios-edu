@@ -2,14 +2,12 @@ import UIKit
 
 class CommentTableCell: UITableViewCell {
 
-    private var comment: UnsplashImageComment?
+    private var comment: Comment?
 
-    public func setComment(_ comment: UnsplashImageComment) {
+    public func setComment(_ comment: Comment) {
         self.comment = comment
         do {
-            let imageData: Data = try Data(contentsOf: URL(string: comment.user.profileImage.large)!)
-            let userComment = comment.user.username == UnsplashUser.ME.username
-            imageView?.image = (userComment ? UIImage(data: imageData) : UIImage(named: "avatar"))?.resized(to: CGSize(width: 40, height: 40))
+            imageView?.image = UIImage(named: "avatar")?.resized(to: CGSize(width: 40, height: 40))
             imageView?.layer.masksToBounds = false
             imageView?.layer.cornerRadius = 20
             imageView?.clipsToBounds = true
@@ -27,7 +25,7 @@ class CommentTableCell: UITableViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        mirrorCellIf(required: comment?.user.username == UnsplashUser.ME.username)
+        mirrorCellIf(required: comment?.user.username == User.ME.username)
     }
 
     private func mirrorCellIf(required: Bool) {
