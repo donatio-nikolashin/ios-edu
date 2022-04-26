@@ -12,34 +12,44 @@
 		8656434627E112FD0033FD01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8656434527E112FD0033FD01 /* Assets.xcassets */; };
 		E069B0D73AF92C316DA52CC7 /* FeedTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B7A1626FEE3F5FEBA00A /* FeedTableViewController.swift */; };
 		E069B1739B81C3352873DC39 /* SetOnClickListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B53AB0EAA5A8F231462A /* SetOnClickListener.swift */; };
+		E069B2E6CEBAB66E954D07ED /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B82527A9E90051A0F22F /* Config.swift */; };
 		E069B45431C2D5A19BDB540D /* HeartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069BD771D35F9B39E6C58BD /* HeartButton.swift */; };
 		E069B4991B1FE6746447097E /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069BA806535DCE9265277BF /* Feed.swift */; };
 		E069B59B3BC3CD32FD680541 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069BBF6E02514365CCCC3EC /* Request.swift */; };
+		E069B72D296172FE76B19289 /* CommentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B3B3A9493504B7490CBB /* CommentViewController.swift */; };
+		E069B77313A0DD1DC874D304 /* SpinnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069BFDF7118CDCD0B74B5F3 /* SpinnerViewController.swift */; };
 		E069B8D0FF77897366AA7078 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B191E76A3200AF3D33F4 /* APIClient.swift */; };
+		E069BBE392234472837C1B42 /* Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B978F0D15820D3409508 /* Resize.swift */; };
 		E069BDAADA6E21CEE8026C57 /* Flash.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069BC616B13B80C1305A9DB /* Flash.swift */; };
 		E069BE4C09EA86E4980ABE3C /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B954A24D92AA62995DEC /* Helpers.swift */; };
 		E069BE596E674049DA7ED48C /* GetHeartPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B754E38B35B985710324 /* GetHeartPath.swift */; };
+		E069BF2CE8C2BC23DA5CA58C /* CommentTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B84DF2D718B38B66B3D6 /* CommentTableCell.swift */; };
 		E069BFD5BEAB25A4BAF25AA1 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E069B242701B6390037C9ADD /* .gitignore */; };
 		E069BFFD2D9B4D0D40DF9FBD /* FeedTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E069B11BA2B9B16AA97D82D1 /* FeedTableCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		86109F7027F3774800F4201A /* Localizable.stringsdict */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; path = Localizable.stringsdict; sourceTree = "<group>"; };
-		8656433927E112FD0033FD01 /* edu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = edu.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8656433927E112FD0033FD01 /* moment.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = moment.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8656433C27E112FD0033FD01 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8656434527E112FD0033FD01 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8656434A27E112FD0033FD01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E069B11BA2B9B16AA97D82D1 /* FeedTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCell.swift; sourceTree = "<group>"; };
 		E069B191E76A3200AF3D33F4 /* APIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		E069B242701B6390037C9ADD /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = file.gitignore; path = .gitignore; sourceTree = "<group>"; };
+		E069B3B3A9493504B7490CBB /* CommentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentViewController.swift; sourceTree = "<group>"; };
 		E069B53AB0EAA5A8F231462A /* SetOnClickListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetOnClickListener.swift; sourceTree = "<group>"; };
 		E069B754E38B35B985710324 /* GetHeartPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetHeartPath.swift; sourceTree = "<group>"; };
 		E069B7A1626FEE3F5FEBA00A /* FeedTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableViewController.swift; sourceTree = "<group>"; };
+		E069B82527A9E90051A0F22F /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		E069B84DF2D718B38B66B3D6 /* CommentTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentTableCell.swift; sourceTree = "<group>"; };
 		E069B954A24D92AA62995DEC /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		E069B978F0D15820D3409508 /* Resize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resize.swift; sourceTree = "<group>"; };
 		E069BA806535DCE9265277BF /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		E069BBF6E02514365CCCC3EC /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
 		E069BC616B13B80C1305A9DB /* Flash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Flash.swift; sourceTree = "<group>"; };
 		E069BD771D35F9B39E6C58BD /* HeartButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeartButton.swift; sourceTree = "<group>"; };
+		E069BFDF7118CDCD0B74B5F3 /* SpinnerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpinnerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				86109F7027F3774800F4201A /* Localizable.stringsdict */,
-				8656433B27E112FD0033FD01 /* edu */,
+				8656433B27E112FD0033FD01 /* moment */,
 				8656433A27E112FD0033FD01 /* Products */,
 				E069B242701B6390037C9ADD /* .gitignore */,
 			);
@@ -66,12 +76,12 @@
 		8656433A27E112FD0033FD01 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8656433927E112FD0033FD01 /* edu.app */,
+				8656433927E112FD0033FD01 /* moment.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8656433B27E112FD0033FD01 /* edu */ = {
+		8656433B27E112FD0033FD01 /* moment */ = {
 			isa = PBXGroup;
 			children = (
 				8656433C27E112FD0033FD01 /* AppDelegate.swift */,
@@ -82,8 +92,9 @@
 				E069BE32A16F151D6BB71EE5 /* Network */,
 				E069B65680782937587A0A17 /* Model */,
 				E069B818E0145B83D72760F1 /* Extension */,
+				E069B612B20B07021EE23183 /* Util */,
 			);
-			path = edu;
+			path = moment;
 			sourceTree = "<group>";
 		};
 		E069B3D3CF83F2C4627E971D /* Element */ = {
@@ -91,8 +102,18 @@
 			children = (
 				E069B11BA2B9B16AA97D82D1 /* FeedTableCell.swift */,
 				E069BD771D35F9B39E6C58BD /* HeartButton.swift */,
+				E069BFDF7118CDCD0B74B5F3 /* SpinnerViewController.swift */,
+				E069B84DF2D718B38B66B3D6 /* CommentTableCell.swift */,
 			);
 			path = Element;
+			sourceTree = "<group>";
+		};
+		E069B612B20B07021EE23183 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				E069B82527A9E90051A0F22F /* Config.swift */,
+			);
+			path = Util;
 			sourceTree = "<group>";
 		};
 		E069B65680782937587A0A17 /* Model */ = {
@@ -109,6 +130,7 @@
 				E069B53AB0EAA5A8F231462A /* SetOnClickListener.swift */,
 				E069B754E38B35B985710324 /* GetHeartPath.swift */,
 				E069BC616B13B80C1305A9DB /* Flash.swift */,
+				E069B978F0D15820D3409508 /* Resize.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -127,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				E069B7A1626FEE3F5FEBA00A /* FeedTableViewController.swift */,
+				E069B3B3A9493504B7490CBB /* CommentViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -134,9 +157,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8656433827E112FD0033FD01 /* edu */ = {
+		8656433827E112FD0033FD01 /* moment */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8656434D27E112FD0033FD01 /* Build configuration list for PBXNativeTarget "edu" */;
+			buildConfigurationList = 8656434D27E112FD0033FD01 /* Build configuration list for PBXNativeTarget "moment" */;
 			buildPhases = (
 				8656433527E112FD0033FD01 /* Sources */,
 				8656433627E112FD0033FD01 /* Frameworks */,
@@ -146,9 +169,9 @@
 			);
 			dependencies = (
 			);
-			name = edu;
-			productName = edu;
-			productReference = 8656433927E112FD0033FD01 /* edu.app */;
+			name = moment;
+			productName = moment;
+			productReference = 8656433927E112FD0033FD01 /* moment.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -166,7 +189,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8656433427E112FD0033FD01 /* Build configuration list for PBXProject "edu" */;
+			buildConfigurationList = 8656433427E112FD0033FD01 /* Build configuration list for PBXProject "moment" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -179,7 +202,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8656433827E112FD0033FD01 /* edu */,
+				8656433827E112FD0033FD01 /* moment */,
 			);
 		};
 /* End PBXProject section */
@@ -213,6 +236,11 @@
 				E069B45431C2D5A19BDB540D /* HeartButton.swift in Sources */,
 				E069BE596E674049DA7ED48C /* GetHeartPath.swift in Sources */,
 				E069BDAADA6E21CEE8026C57 /* Flash.swift in Sources */,
+				E069B2E6CEBAB66E954D07ED /* Config.swift in Sources */,
+				E069B77313A0DD1DC874D304 /* SpinnerViewController.swift in Sources */,
+				E069B72D296172FE76B19289 /* CommentViewController.swift in Sources */,
+				E069BF2CE8C2BC23DA5CA58C /* CommentTableCell.swift in Sources */,
+				E069BBE392234472837C1B42 /* Resize.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,7 +297,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -323,7 +351,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -342,9 +370,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 483TSH5L3U;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = edu/Info.plist;
+				INFOPLIST_FILE = moment/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -353,11 +382,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.sefran.edu;
+				PRODUCT_BUNDLE_IDENTIFIER = org.sefran.moment;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -370,9 +399,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 483TSH5L3U;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = edu/Info.plist;
+				INFOPLIST_FILE = moment/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -381,18 +411,18 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.sefran.edu;
+				PRODUCT_BUNDLE_IDENTIFIER = org.sefran.moment;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8656433427E112FD0033FD01 /* Build configuration list for PBXProject "edu" */ = {
+		8656433427E112FD0033FD01 /* Build configuration list for PBXProject "moment" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8656434B27E112FD0033FD01 /* Debug */,
@@ -401,7 +431,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8656434D27E112FD0033FD01 /* Build configuration list for PBXNativeTarget "edu" */ = {
+		8656434D27E112FD0033FD01 /* Build configuration list for PBXNativeTarget "moment" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8656434E27E112FD0033FD01 /* Debug */,
