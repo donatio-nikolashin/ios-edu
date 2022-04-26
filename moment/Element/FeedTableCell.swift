@@ -1,13 +1,13 @@
 import UIKit
-import FirebaseStorage
 import FirebaseAuth
 import DITranquillity
+import RealmSwift
 
 class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
 
     private static let formatString: String = NSLocalizedString("likes count", comment: "Likes count string format to be found in Localized.stringsdict")
-    private let storage: Storage = DIContainer.shared.resolve()
-    private let dataProvider: DataProvider = DIContainer.shared.resolve()
+    private let photoDAO: PhotoFirestore = DIContainer.shared.resolve()
+    private let imageProvider: ImageProvider = DIContainer.shared.resolve()
 
     private var photo: Photo
     private let contentWidth: Double
@@ -20,6 +20,7 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
     private let share: ((UIImage) -> Void)?
     private let comment: (() -> Void)?
 
+    // TODO use method instead of initializer
     init(share: ((UIImage) -> Void)?,
          comment: (() -> Void)?,
          photo: inout Photo,
@@ -41,7 +42,7 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public func reload() {
+    func reload() {
         let imageRatio: Double = photo.height / photo.width
         let imageHeight = contentWidth * imageRatio
         addSpinnerSubview(imageHeight: imageHeight)
@@ -65,7 +66,7 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
         portraitView.layer.masksToBounds = false
         portraitView.layer.cornerRadius = 15
         portraitView.clipsToBounds = true
-        self.contentView.addSubview(portraitView)
+        contentView.addSubview(portraitView)
     }
 
     private func addNicknameSubview() {
@@ -81,51 +82,11 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
             view?.contentMode = .scaleAspectFit
             view?.clipsToBounds = true
         }
-        Task.init {
-            let path = "photos/" + self.photo.id + ".jpeg";
-            do {
-                let imageData: Data = try await storage.reference(withPath: path).data(maxSize: 1 * 1024 * 1024)
-                DispatchQueue.main.async {
-                    let shareButton = UIButton(type: .custom)
-                    shareButton.setImage(UIImage(named: "share"), for: UIControl.State.normal)
-                    shareButton.frame = CGRect(x: (self.margin * 3) + 60, y: imageHeight + 60, width: 30, height: 30)
-                    let image = UIImage(data: imageData)
-                    self.mainImageView = UIImageView(image: image)
-                    self.mainImageView?.frame = CGRect(x: 0, y: 0, width: self.contentWidth, height: imageHeight)
-                    shareButton.setOnClickListener(for: UIControl.Event.touchUpInside) {
-                        guard let image = image else {
-                            return
-                        }
-                        self.share?(image)
-                    }
-                    self.contentView.addSubview(shareButton)
-                    configure(self.mainImageView!)
-                    self.addBezierLayer()
-                    let scrollView = UIScrollView()
-                    scrollView.frame = CGRect(x: self.margin, y: 50, width: self.contentWidth, height: imageHeight)
-                    scrollView.delegate = self
-                    scrollView.minimumZoomScale = 1.0
-                    scrollView.maximumZoomScale = 10.0
-                    scrollView.layer.cornerRadius = 8.0
-                    scrollView.alwaysBounceVertical = false
-                    scrollView.alwaysBounceHorizontal = false
-                    scrollView.showsHorizontalScrollIndicator = false
-                    scrollView.showsVerticalScrollIndicator = false
-                    scrollView.addSubview(self.mainImageView!)
-                    self.spinner.view.removeFromSuperview()
-                    self.contentView.addSubview(scrollView)
-                    self.mainImageView!.isUserInteractionEnabled = true
-                    self.mainImageView!.setOnDoubleClickListener {
-                        guard !self.photo.likedByUser else {
-                            return
-                        }
-                        self.heartLayer?.flash(duration: 0.2)
-                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                        self.likePressed()
-                    }
+        imageProvider.fetch(photo.id) { data, error in
+            guard error == nil, let data = data else {
+                if error != nil {
+                    print("Unable to download image, error: \(error!).")
                 }
-            } catch {
-                print("Unable to download image with path \(path), error: \(error).")
                 DispatchQueue.main.async {
                     let label = UILabel()
                     label.frame = CGRect(x: self.margin, y: 50, width: self.contentWidth, height: imageHeight)
@@ -136,6 +97,46 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
                     self.spinner.view.removeFromSuperview()
                     self.contentView.addSubview(label)
                 }
+                return
+            }
+            DispatchQueue.main.async {
+                let shareButton = UIButton(type: .custom)
+                shareButton.setImage(UIImage(named: "share"), for: UIControl.State.normal)
+                shareButton.frame = CGRect(x: (self.margin * 3) + 60, y: imageHeight + 60, width: 30, height: 30)
+                let image = UIImage(data: data)
+                self.mainImageView = UIImageView(image: image)
+                self.mainImageView?.frame = CGRect(x: 0, y: 0, width: self.contentWidth, height: imageHeight)
+                shareButton.setOnClickListener(for: UIControl.Event.touchUpInside) {
+                    guard let image = image else {
+                        return
+                    }
+                    self.share?(image)
+                }
+                self.contentView.addSubview(shareButton)
+                configure(self.mainImageView!)
+                self.addBezierLayer()
+                let scrollView = UIScrollView()
+                scrollView.frame = CGRect(x: self.margin, y: 50, width: self.contentWidth, height: imageHeight)
+                scrollView.delegate = self
+                scrollView.minimumZoomScale = 1.0
+                scrollView.maximumZoomScale = 10.0
+                scrollView.layer.cornerRadius = 8.0
+                scrollView.alwaysBounceVertical = false
+                scrollView.alwaysBounceHorizontal = false
+                scrollView.showsHorizontalScrollIndicator = false
+                scrollView.showsVerticalScrollIndicator = false
+                scrollView.addSubview(self.mainImageView!)
+                self.spinner.view.removeFromSuperview()
+                self.contentView.addSubview(scrollView)
+                self.mainImageView!.isUserInteractionEnabled = true
+                self.mainImageView!.setOnDoubleClickListener {
+                    guard !self.photo.likedByUser else {
+                        return
+                    }
+                    self.heartLayer?.flash(duration: 0.2)
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    self.likePressed()
+                }
             }
         }
     }
@@ -145,7 +146,6 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
         commentButton.setImage(UIImage(named: "comment"), for: UIControl.State.normal)
         commentButton.frame = CGRect(x: (margin * 2) + 30, y: imageHeight + 60, width: 30, height: 30)
         commentButton.setOnClickListener(for: UIControl.Event.touchUpInside) {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
             self.comment?()
         }
         contentView.addSubview(commentButton)
@@ -165,7 +165,6 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
             return
         }
         likeCounter.text = likeText(likes: photo.likes.count)
-//        likeCounter.font = UIFont(name: likeCounter.font.fontName, size: 15)
         likeCounter.frame = CGRect(x: margin, y: imageHeight + 100, width: contentWidth, height: 20)
         contentView.addSubview(likeCounter)
         likeButton = HeartButton()
@@ -175,7 +174,6 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
         likeButton.setLiked(value: photo.likedByUser)
         likeButton.frame = CGRect(x: margin, y: imageHeight + 60, width: 30, height: 30)
         likeButton.setOnClickListener(for: UIControl.Event.touchUpInside) {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
             self.likePressed()
         }
         contentView.addSubview(likeButton)
@@ -190,12 +188,12 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
             guard let like = photo.likes.first(where: { like in like.userRef == currentUserUid }) else {
                 return
             }
-            dataProvider.remove(like)
+            photoDAO.remove(like)
             photo.likedByUser = false
             photo.likes.removeAll(where: { like in like.userRef == currentUserUid })
             likeCounter?.text = likeText(likes: photo.likes.count)
         } else {
-            guard let like = dataProvider.like(photo) else {
+            guard let like = photoDAO.like(photo) else {
                 return
             }
             photo.likedByUser = true

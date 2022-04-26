@@ -1,11 +1,22 @@
 import UIKit
+import SwiftLazy
 import FirebaseAuth
 import DITranquillity
 
-public class LoginViewController: UIViewController {
+class LoginViewController: UIViewController {
 
-    private let feedTableViewController: FeedTableViewController = DIContainer.shared.resolve()
-    private let registrationViewController: RegistrationViewController = DIContainer.shared.resolve()
+    private let feedTableViewController: Lazy<FeedTableViewController>
+    private let registrationViewController: Lazy<RegistrationViewController>
+
+    init(feedTableViewController: Lazy<FeedTableViewController>, registrationViewController: Lazy<RegistrationViewController>) {
+        self.feedTableViewController = feedTableViewController
+        self.registrationViewController = registrationViewController
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     private let signInLabel: UILabel = {
         let label = UILabel()
@@ -64,12 +75,12 @@ public class LoginViewController: UIViewController {
         return button
     }()
 
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         view?.overrideUserInterfaceStyle = .light
         view.backgroundColor = .white
         if FirebaseAuth.Auth.auth().currentUser != nil {
-            navigationController?.setViewControllers([FeedTableViewController()], animated: true)
+            navigationController?.setViewControllers([feedTableViewController.value], animated: true)
             return
         }
         view.addSubview(signInLabel)
@@ -82,7 +93,7 @@ public class LoginViewController: UIViewController {
         signUpButton.addTarget(self, action: #selector(didTapSignUpButton), for: .touchUpInside)
     }
 
-    public override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         emailField.text = nil
         passwordField.text = nil
@@ -90,19 +101,19 @@ public class LoginViewController: UIViewController {
         errorLabel.isHidden = true
     }
 
-    public override func viewDidAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         emailField.becomeFirstResponder()
     }
 
-    public override func viewDidLayoutSubviews() {
+    override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         signInLabel.frame = CGRect(x: 0, y: 100, width: view.frame.width, height: 80)
         emailField.frame = CGRect(x: 20, y: signInLabel.frame.origin.y + signInLabel.frame.size.height + 10, width: view.frame.width - 40, height: 50)
         passwordField.frame = CGRect(x: 20, y: emailField.frame.origin.y + emailField.frame.size.height + 10, width: view.frame.width - 40, height: 50)
         errorLabel.frame = CGRect(x: 20, y: passwordField.frame.origin.y + passwordField.frame.size.height + 8, width: view.frame.width - 40, height: 14)
         signInButton.frame = CGRect(x: 20, y: errorLabel.frame.origin.y + errorLabel.frame.size.height + 8, width: view.frame.width - 40, height: 52)
-        signUpButton.frame = CGRect(x: 20, y: signInButton.frame.origin.y + signInButton.frame.size.height + 20, width: view.frame.width - 40, height: 14)
+        signUpButton.frame = CGRect(x: 100, y: signInButton.frame.origin.y + signInButton.frame.size.height + 20, width: view.frame.width - 200, height: 14)
     }
 
     @objc func didTapSignInButton() {
@@ -124,13 +135,13 @@ public class LoginViewController: UIViewController {
             self.errorLabel.isHidden = true
             self.emailField.resignFirstResponder()
             self.passwordField.resignFirstResponder()
-            self.navigationController?.setViewControllers([self.feedTableViewController], animated: true)
+            self.navigationController?.setViewControllers([self.feedTableViewController.value], animated: true)
         })
     }
 
     @objc func didTapSignUpButton() {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        navigationController?.pushViewController(registrationViewController, animated: false)
+        navigationController?.pushViewController(registrationViewController.value, animated: false)
     }
 
 }

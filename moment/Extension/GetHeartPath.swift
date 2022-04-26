@@ -1,6 +1,6 @@
 import UIKit
 
-public extension UIBezierPath {
+extension UIBezierPath {
 
     func drawHeart(originalRect: CGRect, scale: Double) -> Void {
         let scaledWidth = (originalRect.size.width * CGFloat(scale))

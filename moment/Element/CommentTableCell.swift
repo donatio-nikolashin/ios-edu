@@ -4,28 +4,24 @@ class CommentTableCell: UITableViewCell {
 
     private var comment: Comment?
 
-    public func setComment(_ comment: Comment) {
+    func setComment(_ comment: Comment) {
         self.comment = comment
-        do {
-            imageView?.image = UIImage(named: "avatar")?.resized(to: CGSize(width: 40, height: 40))
-            imageView?.layer.masksToBounds = false
-            imageView?.layer.cornerRadius = 20
-            imageView?.clipsToBounds = true
-            textLabel?.text = comment.user.username + ": " + comment.comment
-            textLabel?.numberOfLines = 0
-            textLabel?.preferredMaxLayoutWidth = contentView.bounds.size.width
-            textLabel?.lineBreakMode = .byWordWrapping
-            textLabel?.textColor = .black
-            textLabel?.textAlignment = .left
-            textLabel?.sizeToFit()
-        } catch {
-            print("Unexpected error: \(error).")
-        }
+        imageView?.image = UIImage(named: "avatar")?.resized(to: CGSize(width: 40, height: 40))
+        imageView?.layer.masksToBounds = false
+        imageView?.layer.cornerRadius = 20
+        imageView?.clipsToBounds = true
+        textLabel?.text = comment.user.username + ": " + comment.comment
+        textLabel?.numberOfLines = 0
+        textLabel?.preferredMaxLayoutWidth = contentView.bounds.size.width
+        textLabel?.lineBreakMode = .byWordWrapping
+        textLabel?.textColor = .black
+        textLabel?.textAlignment = .left
+        textLabel?.sizeToFit()
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        mirrorCellIf(required: comment?.user.username == User.ME.username)
+        mirrorCellIf(required: comment?.commentByUser == true)
     }
 
     private func mirrorCellIf(required: Bool) {

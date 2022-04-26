@@ -15,6 +15,7 @@ class ClosureSleeve {
 
 extension UIControl {
     func setOnClickListener(for controlEvents: UIControl.Event = .primaryActionTriggered, action: @escaping () -> ()) {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         let sleeve = ClosureSleeve(attachTo: self, closure: action)
         addTarget(sleeve, action: #selector(ClosureSleeve.invoke), for: controlEvents)
     }
