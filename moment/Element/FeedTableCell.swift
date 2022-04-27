@@ -9,12 +9,19 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
     private let margin: Double
     private var likeCounter: UILabel?
     private var likeButton: HeartButton?
+    private let spinner = SpinnerViewController()
     private var mainImageView: UIImageView?
     private var heartLayer: CAShapeLayer?
     private let share: ((UIImage) -> Void)?
+    private let comment: (() -> Void)?
 
-    init(share: ((UIImage) -> Void)?, unsplashImage: inout UnsplashImage, contentWidth: Double, margin: Double) {
+    init(share: ((UIImage) -> Void)?,
+         comment: (() -> Void)?,
+         unsplashImage: inout UnsplashImage,
+         contentWidth: Double,
+         margin: Double) {
         self.share = share
+        self.comment = comment
         self.unsplashImage = unsplashImage
         self.contentWidth = contentWidth
         self.margin = margin
@@ -32,23 +39,30 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
     public func reload() {
         let imageRatio: Double = unsplashImage.height / unsplashImage.width
         let imageHeight = contentWidth * imageRatio
+        addSpinnerSubview(imageHeight: imageHeight)
         addNicknameSubview()
         addLikeButtonAndLikeCounterSubviews(imageHeight: imageHeight)
-        addDescription(imageHeight: imageHeight)
         addPortraitSubview()
-        addMainImageSubviewAndShareButton(imageHeight: imageHeight, imageRatio: imageRatio)
+        addMainImageAndShareButtonSubviews(imageHeight: imageHeight, imageRatio: imageRatio)
+        addCommentButtonSubview(imageHeight: imageHeight)
+    }
+
+    private func addSpinnerSubview(imageHeight: Double) {
+        contentView.addSubview(spinner.view)
+        spinner.view.layer.cornerRadius = 8.0
+        spinner.view.frame = CGRect(x: margin, y: 50, width: contentWidth, height: imageHeight)
     }
 
     private func addPortraitSubview() {
-        DispatchQueue.global().async {
+        DispatchQueue.global(qos: .background).async {
             do {
                 let imageData: Data = try Data(contentsOf: URL(string: self.unsplashImage.user.profileImage.large)!)
                 DispatchQueue.main.async {
                     let image = UIImage(data: imageData)
                     let portraitView = UIImageView(image: image)
-                    portraitView.frame = CGRect(x: self.margin, y: 10, width: 40, height: 40)
+                    portraitView.frame = CGRect(x: self.margin, y: 10, width: 30, height: 30)
                     portraitView.layer.masksToBounds = false
-                    portraitView.layer.cornerRadius = 20
+                    portraitView.layer.cornerRadius = 15
                     portraitView.clipsToBounds = true
                     self.contentView.addSubview(portraitView)
                 }
@@ -61,26 +75,26 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
     private func addNicknameSubview() {
         let nicknameLabelView = UILabel()
         nicknameLabelView.text = unsplashImage.user.username
-        nicknameLabelView.frame = CGRect(x: (margin * 2) + 40, y: 10, width: contentWidth - 60, height: 40)
+        nicknameLabelView.frame = CGRect(x: (margin * 2) + 30, y: 10, width: contentWidth - 50, height: 30)
         contentView.addSubview(nicknameLabelView)
     }
 
-    private func addMainImageSubviewAndShareButton(imageHeight: Double, imageRatio: Double) {
+    private func addMainImageAndShareButtonSubviews(imageHeight: Double, imageRatio: Double) {
         let configure: (UIView?) -> Void = { view in
-            view?.frame = CGRect(x: 0, y: 0, width: self.contentWidth, height: imageHeight)
             view?.layer.cornerRadius = 8.0
             view?.contentMode = .scaleAspectFit
             view?.clipsToBounds = true
         }
-        DispatchQueue.global().async {
+        DispatchQueue.global(qos: .background).async {
             do {
                 let imageData: Data = try Data(contentsOf: URL(string: self.unsplashImage.urls.regular)!)
                 DispatchQueue.main.async {
                     let shareButton = UIButton(type: .custom)
-                    shareButton.setImage(UIImage(named: "share_btn"), for: UIControl.State.normal)
-                    shareButton.frame = CGRect(x: self.contentWidth - self.margin - 20, y: imageHeight + 70, width: 40, height: 40)
+                    shareButton.setImage(UIImage(named: "share"), for: UIControl.State.normal)
+                    shareButton.frame = CGRect(x: (self.margin * 3) + 60, y: imageHeight + 60, width: 30, height: 30)
                     let image = UIImage(data: imageData)
                     self.mainImageView = UIImageView(image: image)
+                    self.mainImageView?.frame = CGRect(x: 0, y: 0, width: self.contentWidth, height: imageHeight)
                     shareButton.setOnClickListener(for: UIControl.Event.touchUpInside) {
                         guard let image = image else {
                             return
@@ -88,10 +102,10 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
                         self.share?(image)
                     }
                     self.contentView.addSubview(shareButton)
-                    configure(self.mainImageView)
+                    configure(self.mainImageView!)
                     self.addBezierLayer()
                     let scrollView = UIScrollView()
-                    scrollView.frame = CGRect(x: self.margin, y: 60, width: self.contentWidth, height: imageHeight)
+                    scrollView.frame = CGRect(x: self.margin, y: 50, width: self.contentWidth, height: imageHeight)
                     scrollView.delegate = self
                     scrollView.minimumZoomScale = 1.0
                     scrollView.maximumZoomScale = 10.0
@@ -101,9 +115,10 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
                     scrollView.showsHorizontalScrollIndicator = false
                     scrollView.showsVerticalScrollIndicator = false
                     scrollView.addSubview(self.mainImageView!)
+                    self.spinner.view.removeFromSuperview()
                     self.contentView.addSubview(scrollView)
-                    self.mainImageView?.isUserInteractionEnabled = true
-                    self.mainImageView?.setOnDoubleClickListener {
+                    self.mainImageView!.isUserInteractionEnabled = true
+                    self.mainImageView!.setOnDoubleClickListener {
                         guard !self.unsplashImage.likedByUser else {
                             return
                         }
@@ -114,14 +129,29 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
                     }
                 }
             } catch {
-                let label = UILabel()
-                label.text = "Couldn't load image. Please try again later."
-                label.textAlignment = .center
-                label.textColor = .gray
-                configure(label)
-                self.contentView.addSubview(label)
+                DispatchQueue.main.async {
+                    let label = UILabel()
+                    label.frame = CGRect(x: self.margin, y: 50, width: self.contentWidth, height: imageHeight)
+                    label.text = "Couldn't load image. Please try again later."
+                    label.textAlignment = .center
+                    label.textColor = .gray
+                    configure(label)
+                    self.spinner.view.removeFromSuperview()
+                    self.contentView.addSubview(label)
+                }
             }
         }
+    }
+
+    private func addCommentButtonSubview(imageHeight: Double) {
+        let commentButton = UIButton(type: .custom)
+        commentButton.setImage(UIImage(named: "comment"), for: UIControl.State.normal)
+        commentButton.frame = CGRect(x: (margin * 2) + 30, y: imageHeight + 60, width: 30, height: 30)
+        commentButton.setOnClickListener(for: UIControl.Event.touchUpInside) {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            self.comment?()
+        }
+        contentView.addSubview(commentButton)
     }
 
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
@@ -138,30 +168,21 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
             return
         }
         likeCounter.text = likeText(likes: unsplashImage.likes)
-        likeCounter.frame = CGRect(x: (margin * 2) + 40, y: imageHeight + 70, width: contentWidth - 60, height: 40)
+//        likeCounter.font = UIFont(name: likeCounter.font.fontName, size: 15)
+        likeCounter.frame = CGRect(x: margin, y: imageHeight + 100, width: contentWidth, height: 20)
         contentView.addSubview(likeCounter)
         likeButton = HeartButton()
         guard let likeButton = likeButton else {
             return
         }
         likeButton.setLiked(value: unsplashImage.likedByUser)
-        likeButton.frame = CGRect(x: margin, y: imageHeight + 70, width: 40, height: 40)
+        likeButton.frame = CGRect(x: margin, y: imageHeight + 60, width: 30, height: 30)
         likeButton.setOnClickListener(for: UIControl.Event.touchUpInside) {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             self.likePressed()
             likeButton.flipLikedState()
         }
         contentView.addSubview(likeButton)
-    }
-
-    private func addDescription(imageHeight: Double) {
-        if (unsplashImage.description != nil) {
-            let descriptionView = UILabel()
-            descriptionView.text = unsplashImage.description
-            descriptionView.textColor = .black
-            descriptionView.frame = CGRect(x: margin, y: imageHeight + 120, width: contentWidth, height: 40)
-            contentView.addSubview(descriptionView)
-        }
     }
 
     private func likePressed() {
