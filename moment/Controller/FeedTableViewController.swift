@@ -1,8 +1,13 @@
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
+import DITranquillity
 
 class FeedTableViewController: UITableViewController {
 
-    private var images: [UnsplashImage] = []
+    private let dataProvider: DataProvider = DIContainer.shared.resolve()
+
+    private var photos: [Photo] = []
     private var initialFetch = true
 
     override func viewDidLoad() {
@@ -20,32 +25,30 @@ class FeedTableViewController: UITableViewController {
         fetchData()
     }
 
+    override func viewDidLayoutSubviews() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Log Out", style: .plain, target: self, action: #selector(logOutTapped))
+    }
+
+    @objc private func logOutTapped() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        do {
+            try FirebaseAuth.Auth.auth().signOut()
+            navigationController?.setViewControllers([LoginViewController()], animated: true)
+        } catch {
+            print("unable to log out")
+        }
+    }
+
     @objc private func fetchData() {
-        let client = APIClient(host: Config.unsplashApiHost)
         Task.init {
-            do {
-                (try await client.send(
-                                .get("/photos/random",
-                                        query: [
-                                            ("client_id", Config.unsplashAccessKey),
-                                            ("count", initialFetch ? Config.unsplashFetchCount : "4"),
-                                            ("orientation", "squarish")
-                                        ]
-                                ))
-                        .value as [UnsplashImage])
-                        .forEach { image in
-                            if image.description != nil {
-                                image.comments = [UnsplashImageComment(comment: image.description!, user: image.user)]
-                            }
-                            if !images.contains(where: { exising in exising.id == image.id }) {
-                                images.insert(image, at: 0)
-                            }
-                        }
-                if initialFetch == true {
-                    initialFetch = false
+            let photos = await dataProvider.fetchPhotos()
+            photos.forEach { photo in
+                if !self.photos.contains(where: { exising in exising.id == photo.id }) {
+                    if photo.descr != nil {
+                        photo.comments.insert(Comment(comment: photo.descr!, user: photo.user), at: 0)
+                    }
+                    self.photos.insert(photo, at: 0)
                 }
-            } catch {
-                print("Unexpected error: \(error).")
             }
             DispatchQueue.main.async {
                 self.tableView.refreshControl?.endRefreshing()
@@ -55,11 +58,11 @@ class FeedTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        images.count
+        photos.count
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let unsplashImage = images[indexPath.row]
+        let unsplashImage = photos[indexPath.row]
         let contentWidth = view.bounds.width * 0.95
         let ratio = unsplashImage.height / unsplashImage.width
         return (contentWidth * ratio) + 130
@@ -76,15 +79,11 @@ class FeedTableViewController: UITableViewController {
                 comment: {
                     let commentViewController = CommentViewController()
                     self.navigationController?.pushViewController(commentViewController, animated: true)
-                    commentViewController.setComments(self.images[indexPath.row].comments) { comment in
-                        if self.images[indexPath.row].comments == nil {
-                            self.images[indexPath.row].comments = [comment]
-                        } else {
-                            self.images[indexPath.row].comments?.append(comment)
-                        }
+                    commentViewController.setComments(self.photos[indexPath.row].comments) { comment in
+                        self.photos[indexPath.row].comments.append(comment)
                     }
                 },
-                unsplashImage: &images[indexPath.row],
+                photo: &photos[indexPath.row],
                 contentWidth: contentWidth,
                 margin: margin
         )

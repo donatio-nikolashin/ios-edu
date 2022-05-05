@@ -1,10 +1,15 @@
 import UIKit
+import FirebaseStorage
+import FirebaseAuth
+import DITranquillity
 
 class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
 
     private static let formatString: String = NSLocalizedString("likes count", comment: "Likes count string format to be found in Localized.stringsdict")
+    private let storage: Storage = DIContainer.shared.resolve()
+    private let dataProvider: DataProvider = DIContainer.shared.resolve()
 
-    private var unsplashImage: UnsplashImage
+    private var photo: Photo
     private let contentWidth: Double
     private let margin: Double
     private var likeCounter: UILabel?
@@ -17,12 +22,12 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
 
     init(share: ((UIImage) -> Void)?,
          comment: (() -> Void)?,
-         unsplashImage: inout UnsplashImage,
+         photo: inout Photo,
          contentWidth: Double,
          margin: Double) {
         self.share = share
         self.comment = comment
-        self.unsplashImage = unsplashImage
+        self.photo = photo
         self.contentWidth = contentWidth
         self.margin = margin
         super.init(style: CellStyle.default, reuseIdentifier: nil)
@@ -37,7 +42,7 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
     }
 
     public func reload() {
-        let imageRatio: Double = unsplashImage.height / unsplashImage.width
+        let imageRatio: Double = photo.height / photo.width
         let imageHeight = contentWidth * imageRatio
         addSpinnerSubview(imageHeight: imageHeight)
         addNicknameSubview()
@@ -54,27 +59,18 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
     }
 
     private func addPortraitSubview() {
-        DispatchQueue.global(qos: .background).async {
-            do {
-                let imageData: Data = try Data(contentsOf: URL(string: self.unsplashImage.user.profileImage.large)!)
-                DispatchQueue.main.async {
-                    let image = UIImage(data: imageData)
-                    let portraitView = UIImageView(image: image)
-                    portraitView.frame = CGRect(x: self.margin, y: 10, width: 30, height: 30)
-                    portraitView.layer.masksToBounds = false
-                    portraitView.layer.cornerRadius = 15
-                    portraitView.clipsToBounds = true
-                    self.contentView.addSubview(portraitView)
-                }
-            } catch {
-                print("Unexpected error: \(error).")
-            }
-        }
+        let image = UIImage(named: "avatar")
+        let portraitView = UIImageView(image: image)
+        portraitView.frame = CGRect(x: margin, y: 10, width: 30, height: 30)
+        portraitView.layer.masksToBounds = false
+        portraitView.layer.cornerRadius = 15
+        portraitView.clipsToBounds = true
+        self.contentView.addSubview(portraitView)
     }
 
     private func addNicknameSubview() {
         let nicknameLabelView = UILabel()
-        nicknameLabelView.text = unsplashImage.user.username
+        nicknameLabelView.text = photo.user.username
         nicknameLabelView.frame = CGRect(x: (margin * 2) + 30, y: 10, width: contentWidth - 50, height: 30)
         contentView.addSubview(nicknameLabelView)
     }
@@ -85,9 +81,10 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
             view?.contentMode = .scaleAspectFit
             view?.clipsToBounds = true
         }
-        DispatchQueue.global(qos: .background).async {
+        Task.init {
+            let path = "photos/" + self.photo.id + ".jpeg";
             do {
-                let imageData: Data = try Data(contentsOf: URL(string: self.unsplashImage.urls.regular)!)
+                let imageData: Data = try await storage.reference(withPath: path).data(maxSize: 1 * 1024 * 1024)
                 DispatchQueue.main.async {
                     let shareButton = UIButton(type: .custom)
                     shareButton.setImage(UIImage(named: "share"), for: UIControl.State.normal)
@@ -119,16 +116,16 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
                     self.contentView.addSubview(scrollView)
                     self.mainImageView!.isUserInteractionEnabled = true
                     self.mainImageView!.setOnDoubleClickListener {
-                        guard !self.unsplashImage.likedByUser else {
+                        guard !self.photo.likedByUser else {
                             return
                         }
                         self.heartLayer?.flash(duration: 0.2)
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         self.likePressed()
-                        self.likeButton?.flipLikedState()
                     }
                 }
             } catch {
+                print("Unable to download image with path \(path), error: \(error).")
                 DispatchQueue.main.async {
                     let label = UILabel()
                     label.frame = CGRect(x: self.margin, y: 50, width: self.contentWidth, height: imageHeight)
@@ -167,7 +164,7 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
         guard let likeCounter = likeCounter else {
             return
         }
-        likeCounter.text = likeText(likes: unsplashImage.likes)
+        likeCounter.text = likeText(likes: photo.likes.count)
 //        likeCounter.font = UIFont(name: likeCounter.font.fontName, size: 15)
         likeCounter.frame = CGRect(x: margin, y: imageHeight + 100, width: contentWidth, height: 20)
         contentView.addSubview(likeCounter)
@@ -175,26 +172,37 @@ class FeedTableCell: UITableViewCell, UIScrollViewDelegate {
         guard let likeButton = likeButton else {
             return
         }
-        likeButton.setLiked(value: unsplashImage.likedByUser)
+        likeButton.setLiked(value: photo.likedByUser)
         likeButton.frame = CGRect(x: margin, y: imageHeight + 60, width: 30, height: 30)
         likeButton.setOnClickListener(for: UIControl.Event.touchUpInside) {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             self.likePressed()
-            likeButton.flipLikedState()
         }
         contentView.addSubview(likeButton)
     }
 
     private func likePressed() {
-        if unsplashImage.likedByUser {
-            unsplashImage.likedByUser = false
-            unsplashImage.likes = unsplashImage.likes - 1
-            likeCounter?.text = likeText(likes: unsplashImage.likes)
-        } else {
-            unsplashImage.likedByUser = true
-            unsplashImage.likes = unsplashImage.likes + 1
-            likeCounter?.text = likeText(likes: unsplashImage.likes)
+        guard let currentUserUid = FirebaseAuth.Auth.auth().currentUser?.uid else {
+            // force login page ?
+            return
         }
+        if photo.likedByUser {
+            guard let like = photo.likes.first(where: { like in like.userRef == currentUserUid }) else {
+                return
+            }
+            dataProvider.remove(like)
+            photo.likedByUser = false
+            photo.likes.removeAll(where: { like in like.userRef == currentUserUid })
+            likeCounter?.text = likeText(likes: photo.likes.count)
+        } else {
+            guard let like = dataProvider.like(photo) else {
+                return
+            }
+            photo.likedByUser = true
+            photo.likes.append(like)
+            likeCounter?.text = likeText(likes: photo.likes.count)
+        }
+        likeButton?.flipLikedState()
     }
 
     private func likeText(likes: Int) -> String {

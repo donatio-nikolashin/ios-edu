@@ -2,8 +2,8 @@ import UIKit
 
 class CommentViewController: UIViewController {
 
-    private var comments: [UnsplashImageComment] = []
-    private var appendComment: ((UnsplashImageComment) -> Void)?
+    private var comments: [Comment] = []
+    private var appendComment: ((Comment) -> Void)?
 
     private let tableView: UITableView = {
         let table = UITableView()
@@ -76,7 +76,7 @@ class CommentViewController: UIViewController {
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height * 0.9 - keyboardFrame.height)
     }
 
-    public func setComments(_ comments: [UnsplashImageComment]?, appendComment: @escaping (UnsplashImageComment) -> Void) {
+    public func setComments(_ comments: [Comment]?, appendComment: @escaping (Comment) -> Void) {
         self.appendComment = appendComment
         if let comments = comments {
             self.comments = comments
@@ -86,9 +86,9 @@ class CommentViewController: UIViewController {
 
     private func sendComment() {
         if let comment = textField.text {
-            let unsplashComment = UnsplashImageComment(comment)
-            comments.append(unsplashComment)
-            appendComment?(unsplashComment)
+            let comment = Comment(comment: comment, user: User.ME)
+            comments.append(comment)
+            appendComment?(comment)
             tableView.reloadData()
             tableView.scrollToRow(at: IndexPath(row: comments.count - 1, section: 0), at: .top, animated: false)
             textField.text = nil
