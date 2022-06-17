@@ -10,7 +10,7 @@ class HeartButton: UIButton {
     private let unlikedScale: CGFloat = 0.7
     private let likedScale: CGFloat = 1.3
 
-    override public init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         setImage(unlikedImage, for: .normal)
     }
@@ -19,12 +19,12 @@ class HeartButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public func flipLikedState() {
+    func flipLikedState() {
         isLiked = !isLiked
         animate()
     }
 
-    public func setLiked(value: Bool) {
+    func setLiked(value: Bool) {
         isLiked = value
         setImage(value ? likedImage : unlikedImage, for: .normal)
     }

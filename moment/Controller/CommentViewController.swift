@@ -1,9 +1,21 @@
 import UIKit
+import DITranquillity
 
 class CommentViewController: UIViewController {
 
+    private var photo: Photo?
     private var comments: [Comment] = []
     private var appendComment: ((Comment) -> Void)?
+    private let photoFirestore: PhotoFirestore
+
+    init(photoFirestore: PhotoFirestore) {
+        self.photoFirestore = photoFirestore
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     private let tableView: UITableView = {
         let table = UITableView()
@@ -46,7 +58,6 @@ class CommentViewController: UIViewController {
         view.backgroundColor = .white
         view.addSubview(tableView)
         tableView.dataSource = self
-//        tableView.delegate = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 200.0
         view.addSubview(textField)
@@ -55,7 +66,6 @@ class CommentViewController: UIViewController {
         textField.rightViewMode = .whileEditing
         sendButton.setOnClickListener(for: UIControl.Event.touchUpInside) {
             if !(self.textField.text?.isEmpty ?? true) {
-                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 self.sendComment()
                 self.view.endEditing(true)
             }
@@ -76,7 +86,8 @@ class CommentViewController: UIViewController {
         tableView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height * 0.9 - keyboardFrame.height)
     }
 
-    public func setComments(_ comments: [Comment]?, appendComment: @escaping (Comment) -> Void) {
+    func setUp(photo: Photo, comments: [Comment]?, appendComment: @escaping (Comment) -> Void) {
+        self.photo = photo
         self.appendComment = appendComment
         if let comments = comments {
             self.comments = comments
@@ -85,13 +96,14 @@ class CommentViewController: UIViewController {
     }
 
     private func sendComment() {
-        if let comment = textField.text {
-            let comment = Comment(comment: comment, user: User.ME)
-            comments.append(comment)
-            appendComment?(comment)
-            tableView.reloadData()
-            tableView.scrollToRow(at: IndexPath(row: comments.count - 1, section: 0), at: .top, animated: false)
-            textField.text = nil
+        if let comment = textField.text, let photo = photo {
+            photoFirestore.addComment(photo: photo, comment: comment) { comment in
+                self.comments.append(comment)
+                self.appendComment?(comment)
+                self.tableView.reloadData()
+                self.tableView.scrollToRow(at: IndexPath(row: self.comments.count - 1, section: 0), at: .top, animated: false)
+                self.textField.text = nil
+            }
         }
     }
 
@@ -116,14 +128,6 @@ extension CommentViewController: UITableViewDataSource {
     }
 
 }
-
-//extension CommentViewController: UITableViewDelegate {
-//
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        50
-//    }
-//
-//}
 
 extension CommentViewController {
 

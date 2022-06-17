@@ -1,12 +1,23 @@
 import UIKit
+import SwiftLazy
 import FirebaseAuth
 import FirebaseFirestore
 import DITranquillity
 
-public class RegistrationViewController: UIViewController {
+class RegistrationViewController: UIViewController {
 
-    private let feedTableViewController: FeedTableViewController = DIContainer.shared.resolve()
-    private let db: Firestore = DIContainer.shared.resolve()
+    private let firestore: Firestore
+    private let feedTableViewController: Lazy<FeedTableViewController>
+
+    init(firestore: Firestore, feedTableViewController: Lazy<FeedTableViewController>) {
+        self.feedTableViewController = feedTableViewController
+        self.firestore = firestore
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     private let registrationLabel: UILabel = {
         let label = UILabel()
@@ -79,7 +90,7 @@ public class RegistrationViewController: UIViewController {
         return button
     }()
 
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         view?.overrideUserInterfaceStyle = .light
         view.backgroundColor = .white
@@ -95,7 +106,7 @@ public class RegistrationViewController: UIViewController {
         addKeyboardPositionObserver()
     }
 
-    public override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         emailField.text = nil
         passwordField.text = nil
@@ -104,12 +115,12 @@ public class RegistrationViewController: UIViewController {
         errorLabel.isHidden = true
     }
 
-    public override func viewDidAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         emailField.becomeFirstResponder()
     }
 
-    public override func viewDidLayoutSubviews() {
+    override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         resetFrames()
     }
@@ -150,7 +161,7 @@ public class RegistrationViewController: UIViewController {
             errorLabel.isHidden = false
             return
         }
-        db.collection("users").whereField("username", isEqualTo: username).getDocuments(completion: { snapshot, error in
+        firestore.collection("users").whereField("username", isEqualTo: username).getDocuments(completion: { snapshot, error in
             guard error == nil else {
                 self.errorLabel.text = error?.localizedDescription
                 self.errorLabel.isHidden = false
@@ -163,12 +174,12 @@ public class RegistrationViewController: UIViewController {
                         self.errorLabel.isHidden = false
                         return
                     }
-                    self.db.collection("users").document(result!.user.uid).setData(["username": username], merge: false)
+                    self.firestore.collection("users").document(result!.user.uid).setData(["username": username], merge: false)
                     self.errorLabel.text = nil
                     self.errorLabel.isHidden = true
                     self.emailField.resignFirstResponder()
                     self.passwordField.resignFirstResponder()
-                    self.navigationController?.setViewControllers([self.feedTableViewController], animated: true)
+                    self.navigationController?.setViewControllers([self.feedTableViewController.value], animated: true)
                 })
             } else {
                 self.errorLabel.text = "That username is taken. Try another"
