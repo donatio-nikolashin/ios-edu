@@ -2,15 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleIdentifier</key>
-	<string></string>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleDefault</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Camera access is required for photo picker</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Library access is required for photo picker</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Microphone access is required for video picker</string>
 </dict>
 </plist>

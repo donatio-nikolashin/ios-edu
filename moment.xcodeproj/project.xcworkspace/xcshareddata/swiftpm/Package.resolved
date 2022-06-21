@@ -10,12 +10,30 @@
       }
     },
     {
+      "identity" : "ascollectionview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apptekstudios/ASCollectionView",
+      "state" : {
+        "revision" : "4288744ba484c1062c109c0f28d72b629d321d55",
+        "version" : "2.1.1"
+      }
+    },
+    {
       "identity" : "boringssl-swiftpm",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/boringssl-SwiftPM.git",
       "state" : {
         "revision" : "79db6516894a932d0ddaff3b05b9da1e4f6c4069",
         "version" : "0.9.0"
+      }
+    },
+    {
+      "identity" : "differencekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ra1028/DifferenceKit",
+      "state" : {
+        "revision" : "62745d7780deef4a023a792a1f8f763ec7bf9705",
+        "version" : "1.2.0"
       }
     },
     {
@@ -160,6 +178,15 @@
       "state" : {
         "revision" : "8a6b79b5295516459aff0404a517c7f47badae3f",
         "version" : "1.1.9"
+      }
+    },
+    {
+      "identity" : "swiftui-introspect",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/siteline/SwiftUI-Introspect.git",
+      "state" : {
+        "revision" : "f2616860a41f9d9932da412a8978fec79c06fe24",
+        "version" : "0.1.4"
       }
     },
     {
